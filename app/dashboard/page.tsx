@@ -1,34 +1,54 @@
 "use client";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 const Dashboard = () => {
+  const router = useRouter();
   const [positions, setPositions] = useState({ net: [], day: [] });
 
   useEffect(() => {
     const fetchPositions = async () => {
       try {
-        const response = await fetch(
-          "http://localhost:8001/api/user/getPositions"
+        const authResponse = await fetch(
+          "http://localhost:8001/api/auth/isAuthorized?user_id=TZ1921"
         );
 
-        if (response.ok) {
-          const data = await response.json();
-          console.log("data: ", data);
-          setPositions(data);
+        if (authResponse.ok) {
+          const authData = await authResponse.json();
+          if (authData && authData.accessToken && authData.status !== "error") {
+            const positionsResponse = await fetch(
+              "http://localhost:8001/api/user/getPositions"
+            );
+
+            if (positionsResponse.ok) {
+              const positionsData = await positionsResponse.json();
+              console.log("positionsData: ", positionsData);
+              if (positionsData.status === "error") {
+                console.error("Access Token not available or status is error");
+                router.push("/");
+              } else {
+                setPositions(positionsData);
+              }
+            } else {
+              console.error("Failed to fetch positions");
+            }
+          } else {
+            console.error("Access Token not available or status is error");
+            router.push("/");
+          }
         } else {
-          console.error("Failed to fetch positions");
+          console.error("Failed to check authorization");
         }
       } catch (error) {
-        console.error("Error fetching positions:", error);
+        console.error("Error fetching data:", error);
       }
     };
 
     fetchPositions();
-  }, []);
+  }, [router]);
 
   return (
     <div>
-      <h1>Dashboard</h1>
       <div>
         <h2>Positions</h2>
         {positions && (
