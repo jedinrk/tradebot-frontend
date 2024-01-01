@@ -10,14 +10,14 @@ const Dashboard = () => {
     const fetchPositions = async () => {
       try {
         const authResponse = await fetch(
-          "http://localhost:8001/api/auth/isAuthorized?user_id=TZ1921"
+          `${process.env.BASE_URL}/api/auth/isAuthorized?user_id=TZ1921`
         );
 
         if (authResponse.ok) {
           const authData = await authResponse.json();
           if (authData && authData.accessToken && authData.status !== "error") {
             const positionsResponse = await fetch(
-              "http://localhost:8001/api/user/getPositions"
+              `${process.env.BASE_URL}/api/user/getPositions`
             );
 
             if (positionsResponse.ok) {
