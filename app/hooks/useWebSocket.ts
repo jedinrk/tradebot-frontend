@@ -4,8 +4,7 @@ const useWebSocket = () => {
   const [accessToken, setAccessToken] = useState("");
 
   useEffect(() => {
-    console.log("useWebSocket useEffect");
-    const ws = new WebSocket("ws://127.0.0.1:8080"); // Replace with your backend WebSocket URL
+    const ws = new WebSocket(`${process.env.SOCKET_URL}`); // Replace with your backend WebSocket URL
 
     ws.onopen = () => {
       console.log("WebSocket connected");
