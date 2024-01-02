@@ -9,6 +9,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchPositions = async () => {
       try {
+        console.log("fetchPos: ", process.env.BACKEND_URL);
         const authResponse = await fetch(
           `${process.env.BACKEND_URL}/api/auth/isAuthorized?user_id=TZ1921`
         );
